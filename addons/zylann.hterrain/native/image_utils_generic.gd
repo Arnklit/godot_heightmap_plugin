@@ -182,6 +182,44 @@ func lerp_color_brush(im: Image, brush: Image, pos: Vector2,
 	brush.unlock()
 
 
+func lerp_color_brush2(im: Image, nor: Image, cutoff: float, brush: Image, pos: Vector2, 
+	factor: float, target_value: Color):
+		
+	var min_x = int(pos.x)
+	var min_y = int(pos.y)
+	var max_x = min_x + brush.get_width()
+	var max_y = min_y + brush.get_height()
+	var min_noclamp_x = min_x
+	var min_noclamp_y = min_y
+
+	min_x = Util.clamp_int(min_x, 0, im.get_width())
+	min_y = Util.clamp_int(min_y, 0, im.get_height())
+	max_x = Util.clamp_int(max_x, 0, im.get_width())
+	max_y = Util.clamp_int(max_y, 0, im.get_height())
+
+	im.lock()
+	nor.lock()
+	brush.lock()
+
+	for y in range(min_y, max_y):
+		var by = y - min_noclamp_y
+
+		for x in range(min_x, max_x):
+			var bx = x - min_noclamp_x
+
+			var shape_value = brush.get_pixel(bx, by).r
+			var n = nor.get_pixel(x, y).b
+			var dist_from_cutoff = cutoff - n
+			if dist_from_cutoff > 0:
+				var cutoff_factor = clamp( lerp(0.0, 1.0, dist_from_cutoff * 10.0), 0.0, 1.0)
+				var c = im.get_pixel(x, y).linear_interpolate(target_value, factor * cutoff_factor * shape_value)
+				im.set_pixel(x, y, c)
+
+	im.lock()
+	nor.unlock()
+	brush.unlock()
+
+
 func generate_gaussian_brush(im: Image) -> float:
 	var sum := 0.0
 	var center := Vector2(im.get_width() / 2, im.get_height() / 2)

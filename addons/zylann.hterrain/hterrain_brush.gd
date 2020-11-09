@@ -370,14 +370,16 @@ func _flatten(data: HTerrainData, origin_x: int, origin_y: int):
 
 func _paint_classic4_splat(data: HTerrainData, origin_x: int, origin_y: int):
 	var im := data.get_image(HTerrainData.CHANNEL_SPLAT)
+	var nor := data.get_image(HTerrainData.CHANNEL_NORMAL)
+	var cutoff := 0.8
 	assert(im != null)
 
 	_backup_for_undo(data, _undo_cache, origin_x, origin_y, _shape_size, _shape_size)
-
+	
 	var target_color = Color(0, 0, 0, 0)
 	target_color[_texture_index] = 1.0
-	_image_utils.lerp_color_brush(
-		im, _shape, Vector2(origin_x, origin_y), _opacity, target_color)
+	_image_utils.lerp_color_brush2(
+		im, nor, cutoff, _shape, Vector2(origin_x, origin_y), _opacity, target_color)
 
 
 # TODO In the editor, create that map when the shader needing it is assigned?

@@ -21,9 +21,9 @@ static func is_native_available() -> bool:
 
 
 static func get_image_utils():
-	if is_native_available():
-		var ImageUtilsNative = load(NATIVE_PATH + "image_utils.gdns")
-		if ImageUtilsNative != null:
-			return ImageUtilsNative.new()
+#	if is_native_available():
+#		var ImageUtilsNative = load(NATIVE_PATH + "image_utils.gdns")
+#		if ImageUtilsNative != null:
+#			return ImageUtilsNative.new()
 	return ImageUtilsGeneric.new()
 
